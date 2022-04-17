@@ -33,12 +33,12 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        channel.subscribe(new MessageHandler() {
-            @Override
-            public void handleMessage(Message<?> message) throws MessagingException {
-                new PrintService().print((Message<String>) message);
-            }
-        });
+//        channel.subscribe(new MessageHandler() {
+//            @Override
+//            public void handleMessage(Message<?> message) throws MessagingException {
+//                new PrintService().print((Message<String>) message);
+//            }
+//        });
 
         Message<String> message = MessageBuilder
                 .withPayload("Hello World, from the builder pattern")
