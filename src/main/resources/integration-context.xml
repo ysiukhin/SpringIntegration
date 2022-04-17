@@ -5,11 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
 
     <int:channel id="inputChannel" />
+    <int:channel id="outputChannel" />
 
     <bean class="com.oreilly.integration.PrintService" id="printService" />
 
     <int:service-activator
             ref="printService"
             method="print"
-            input-channel="inputChannel" />
+            input-channel="inputChannel"
+            output-channel="outputChannel" />
 </beans>

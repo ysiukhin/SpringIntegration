@@ -1,6 +1,7 @@
 package com.oreilly.integration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,13 +11,8 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.MessagingException;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @SpringBootApplication
 @Configuration
@@ -24,7 +20,12 @@ import java.util.Map;
 public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Autowired
-    private DirectChannel channel;
+    @Qualifier("inputChannel")
+    private DirectChannel inputChannel;
+
+    @Autowired
+    @Qualifier("outputChannel")
+    private DirectChannel outputChannel;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringIntegrationApplication.class, args);
@@ -33,17 +34,17 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-//        channel.subscribe(new MessageHandler() {
-//            @Override
-//            public void handleMessage(Message<?> message) throws MessagingException {
-//                new PrintService().print((Message<String>) message);
-//            }
-//        });
+        outputChannel.subscribe(new MessageHandler() {
+            @Override
+            public void handleMessage(Message<?> message) throws MessagingException {
+                System.out.println(message.getPayload());
+            }
+        });
 
         Message<String> message = MessageBuilder
                 .withPayload("Hello World, from the builder pattern")
                 .setHeader("newHeader", "newHeaderValue")
                 .build();
-        channel.send(message);
+        inputChannel.send(message);
     }
 }
