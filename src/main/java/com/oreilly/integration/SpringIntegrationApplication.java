@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +26,10 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("key", "value");
-        MessageHeaders headers = new MessageHeaders(map);
-
-        Message<String> message = new GenericMessage<>("Hello World", headers);
+        Message<String> message = MessageBuilder
+                .withPayload("Hello World, from the builder pattern")
+                .setHeader("newHeader", "newHeaderValue")
+                .build();
         PrintService service = new PrintService();
         service.print(message);
     }
