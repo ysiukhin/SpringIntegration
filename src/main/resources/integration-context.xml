@@ -4,12 +4,18 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-    <int:channel id="inputChannel" />
+    <int:channel id="inputChannel">
+        <int:queue capacity="10" />
+    </int:channel>
+
+    <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
+                 default-request-channel="inputChannel" />
 
     <bean class="com.oreilly.integration.PrintService" id="printService" />
 
-    <int:service-activator
-            ref="printService"
-            method="print"
-            input-channel="inputChannel" />
+    <int:service-activator  ref="printService"
+                            method="print"
+                            input-channel="inputChannel">
+        <int:poller fixed-rate="3" time-unit="SECONDS" max-messages-per-poll="2" />
+    </int:service-activator>
 </beans>

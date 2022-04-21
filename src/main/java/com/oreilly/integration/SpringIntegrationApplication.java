@@ -8,12 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 @SpringBootApplication
 @Configuration
@@ -21,8 +21,7 @@ import org.springframework.messaging.support.MessageBuilder;
 public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Autowired
-    @Qualifier("inputChannel")
-    private DirectChannel inputChannel;
+    private PrinterGateway gateway;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringIntegrationApplication.class, args);
@@ -30,14 +29,19 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        List<Future<Message<String>>> futures = new ArrayList<>();
 
-        Message<String> message = MessageBuilder
-                .withPayload("Hello World, from the builder pattern")
-                .setHeader("newHeader", "newHeaderValue")
-                .build();
+        for (int i = 0; i < 10; i++) {
+            Message<String> message = MessageBuilder
+                    .withPayload("Printing message payload for " + i)
+                    .setHeader("messageNumber", i)
+                    .build();
+            System.out.println("Sending message " + i);
+            futures.add(this.gateway.print(message));
+        }
 
-        MessagingTemplate template = new MessagingTemplate();
-        Message<?> returnedMessage = template.sendAndReceive(inputChannel, message);
-        System.out.println(returnedMessage.getPayload());
+        for (Future<Message<String>> future : futures) {
+            System.out.println(future.get().getPayload());
+        }
     }
 }
