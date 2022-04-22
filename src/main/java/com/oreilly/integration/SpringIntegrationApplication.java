@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.integration.support.MessageBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,7 @@ public class SpringIntegrationApplication implements ApplicationRunner {
             Message<String> message = MessageBuilder
                     .withPayload("Printing message payload for " + i)
                     .setHeader("messageNumber", i)
+                    .setPriority(i)
                     .build();
             System.out.println("Sending message " + i);
             futures.add(this.gateway.print(message));
