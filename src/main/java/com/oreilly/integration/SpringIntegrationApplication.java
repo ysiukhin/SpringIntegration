@@ -1,7 +1,6 @@
 package com.oreilly.integration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +34,6 @@ public class SpringIntegrationApplication implements ApplicationRunner {
             Message<String> message = MessageBuilder
                     .withPayload("Printing message payload for " + i)
                     .setHeader("messageNumber", i)
-                    .setPriority(i)
                     .build();
             System.out.println("Sending message " + i);
             futures.add(this.gateway.print(message));
