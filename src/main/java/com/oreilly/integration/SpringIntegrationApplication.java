@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.messaging.Message;
 import org.springframework.integration.support.MessageBuilder;
+import sun.jvm.hotspot.runtime.Thread;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @Configuration
@@ -28,19 +28,13 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        List<Future<Message<String>>> futures = new ArrayList<>();
-
         for (int i = 0; i < 10; i++) {
             Message<String> message = MessageBuilder
                     .withPayload("Printing message payload for " + i)
-                    .setHeader("messageNumber", i)
                     .build();
-            System.out.println("Sending message " + i);
-            futures.add(this.gateway.print(message));
-        }
+            this.gateway.print(message);
 
-        for (Future<Message<String>> future : futures) {
-            System.out.println(future.get().getPayload());
+            TimeUnit.MILLISECONDS.sleep(100);
         }
     }
 }
