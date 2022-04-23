@@ -31,19 +31,19 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         for (int i = 0; i < 10; i++) {
             Message<?> message;
-//            if(i % 2 == 0) {
-//                message = MessageBuilder.withPayload("Printing message payload for " + i)
-//                        .setHeader("routeHeader", "string")
-//                        .build();
-//            }
-//            else {
-//                message = MessageBuilder.withPayload(i)
-//                        .setHeader("routeHeader", "int")
-//                        .build();
-//            }
+            if(i % 2 == 0) {
+                message = MessageBuilder.withPayload("Printing message payload for " + i)
+                        .setHeader("routeHeader", "string")
+                        .build();
+            }
+            else {
                 message = MessageBuilder.withPayload(i)
                         .setHeader("routeHeader", "int")
                         .build();
+            }
+//                message = MessageBuilder.withPayload(i)
+//                        .setHeader("routeHeader", "int")
+//                        .build();
 
             this.gateway.print(message);
             TimeUnit.MILLISECONDS.sleep(100);

@@ -8,13 +8,13 @@
     <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
                  default-request-channel="inputChannel" />
 
-    <int:recipient-list-router input-channel="inputChannel" default-output-channel="defaultChannel">
-        <int:recipient selector-expression="payload.equals(5)" channel="intChannel" />
-        <int:recipient selector-expression="payload.equals(2)" channel="stringChannel" />
-    </int:recipient-list-router>
-
     <int:channel id="inputChannel" />
+
     <int:channel id="defaultChannel" />
+
+    <int:router ref="customRouter" input-channel="inputChannel" />
+
+    <bean id="customRouter" class="com.oreilly.integration.CustomRouter" />
 
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
