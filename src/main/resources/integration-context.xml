@@ -5,12 +5,24 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
+    <int:bridge input-channel="pollableChannel"
+                output-channel="inputChannel">
+        <int:poller fixed-delay="5"
+                    time-unit="SECONDS"
+                    max-messages-per-poll="2">
+        </int:poller>
+    </int:bridge>
+
     <task:executor id="executor" pool-size="5" />
+
+    <int:channel id="pollableChannel">
+        <int:queue capacity="10"/>
+    </int:channel>
 
     <int:publish-subscribe-channel id="inputChannel" task-executor="executor"/>
 
     <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
-                 default-request-channel="inputChannel" />
+                 default-request-channel="pollableChannel" />
 
     <bean class="com.oreilly.integration.PrintService" id="printService" />
 
