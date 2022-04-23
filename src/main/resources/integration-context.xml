@@ -5,39 +5,27 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <bean id="interceptor" class="com.oreilly.integration.CustomChannelInterceptor" />
+    <int:payload-type-router input-channel="inputChannel">
+        <int:mapping type="java.lang.Integer" channel="intChannel"/>
+        <int:mapping type="java.lang.String" channel="stringChannel"/>
+    </int:payload-type-router>
 
-    <int:bridge input-channel="pollableChannel"
-                output-channel="inputChannel">
-        <int:poller fixed-delay="5"
-                    time-unit="SECONDS"
-                    max-messages-per-poll="2">
-        </int:poller>
-    </int:bridge>
-
-    <task:executor id="executor" pool-size="5" />
-
-    <int:channel id="pollableChannel">
-        <int:queue capacity="10"/>
-        <int:interceptors>
-            <int:ref bean="interceptor"/>
-        </int:interceptors>
-    </int:channel>
-
-    <int:publish-subscribe-channel id="inputChannel" task-executor="executor"/>
+    <int:channel id="inputChannel" />
 
     <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
-                 default-request-channel="pollableChannel" />
+                 default-request-channel="inputChannel" />
 
-    <bean class="com.oreilly.integration.PrintService" id="printService" />
+    <bean id="printService"
+          class="com.oreilly.integration.PrintService" />
 
-    <bean class="com.oreilly.integration.UppercasePrintService" id="uppercasePrintService" />
+    <bean id="numericPrintService"
+          class="com.oreilly.integration.NumericPrintService" />
 
-    <int:service-activator order="1" ref="printService"
+    <int:service-activator ref="printService"
                             method="print"
-                            input-channel="inputChannel" />
+                            input-channel="stringChannel" />
 
-    <int:service-activator order="2" ref="uppercasePrintService"
+    <int:service-activator ref="numericPrintService"
                             method="print"
-                            input-channel="inputChannel" />
+                            input-channel="intChannel" />
 </beans>

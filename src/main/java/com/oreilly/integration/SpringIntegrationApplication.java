@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.messaging.Message;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.support.GenericMessage;
 import sun.jvm.hotspot.runtime.Thread;
 
 import java.time.temporal.ChronoUnit;
@@ -29,11 +30,14 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         for (int i = 0; i < 10; i++) {
-            Message<String> message = MessageBuilder
-                    .withPayload("Printing message payload for " + i)
-                    .build();
+            Message<?> message;
+            if(i % 2 == 0) {
+                message = new GenericMessage<>("Printing message payload for " + i);
+            } else {
+                message = new GenericMessage<>(i);
+            }
             this.gateway.print(message);
-            TimeUnit.MILLISECONDS.sleep(100);
+//            TimeUnit.MILLISECONDS.sleep(100);
         }
     }
 }

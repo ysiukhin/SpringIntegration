@@ -2,10 +2,8 @@ package com.oreilly.integration;
 
 import org.springframework.messaging.Message;
 
-import java.util.Locale;
-
-public class UppercasePrintService {
+public class NumericPrintService {
     public void print(Message<String> message) {
-        System.out.println(message.getPayload().toUpperCase(Locale.ROOT));
+        System.out.println("Printing the numeric: " + message.getPayload());
     }
 }
