@@ -13,8 +13,9 @@
 
     <int:filter input-channel="inputChannel"
                 output-channel="outputChannel"
-                expression="payload.equals(4)" />
+                ref="customFilter" />
 
+    <bean id="customFilter" class="com.oreilly.integration.CustomFilter" />
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
 
