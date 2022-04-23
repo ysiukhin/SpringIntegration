@@ -33,7 +33,6 @@ public class SpringIntegrationApplication implements ApplicationRunner {
                     .withPayload("Printing message payload for " + i)
                     .build();
             this.gateway.print(message);
-
             TimeUnit.MILLISECONDS.sleep(100);
         }
     }
