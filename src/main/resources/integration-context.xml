@@ -10,11 +10,14 @@
 
     <int:channel id="inputChannel" />
     <int:channel id="outputChannel" />
+    <int:channel id="agChannel" />
 
     <int:splitter ref="customSplitter"
                   input-channel="inputChannel"
-                  output-channel="outputChannel"
+                  output-channel="agChannel"
                   method="split" />
+
+    <int:aggregator input-channel="agChannel" output-channel="outputChannel" />
 
     <bean id="customSplitter"
           class="com.oreilly.integration.CustomSplitter" />

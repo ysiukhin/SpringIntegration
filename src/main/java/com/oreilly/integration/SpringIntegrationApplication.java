@@ -29,23 +29,11 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        for (int i = 0; i < 10; i++) {
-            Message<?> message;
-//            if(i % 2 == 0) {
-//                message = MessageBuilder.withPayload("Printing message payload for " + i)
-//                        .setHeader("routeHeader", "string")
-//                        .build();
-//            }
-//            else {
-//                message = MessageBuilder.withPayload(i)
-//                        .setHeader("routeHeader", "int")
-//                        .build();
-//            }
-//                message = MessageBuilder.withPayload(i).build();
-                message = MessageBuilder.withPayload("Yuriy Siukhin").build();
+        String[] payloads = {"Kevin Bowersox", "Yuriy Siukhin", "John Doe"};
 
-            this.gateway.print(message);
-            TimeUnit.MILLISECONDS.sleep(100);
+        for (String payload : payloads) {
+            this.gateway.print(new GenericMessage<>(payload));
         }
+        TimeUnit.MILLISECONDS.sleep(100);
     }
 }
