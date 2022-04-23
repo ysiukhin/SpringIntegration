@@ -33,11 +33,11 @@ public class SpringIntegrationApplication implements ApplicationRunner {
             Message<?> message;
             if(i % 2 == 0) {
                 message = MessageBuilder.withPayload("Printing message payload for " + i)
-                        .setHeader("routeHeader", "stringChannel")
+                        .setHeader("routeHeader", "string")
                         .build();
             } else {
                 message = MessageBuilder.withPayload(i)
-                        .setHeader("routeHeader", "intChannel")
+                        .setHeader("routeHeader", "int")
                         .build();
             }
             this.gateway.print(message);
