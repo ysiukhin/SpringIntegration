@@ -41,7 +41,8 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 //                        .setHeader("routeHeader", "int")
 //                        .build();
 //            }
-                message = MessageBuilder.withPayload(i).build();
+//                message = MessageBuilder.withPayload(i).build();
+                message = MessageBuilder.withPayload("Yuriy Siukhin").build();
 
             this.gateway.print(message);
             TimeUnit.MILLISECONDS.sleep(100);

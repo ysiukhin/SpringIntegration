@@ -11,11 +11,13 @@
     <int:channel id="inputChannel" />
     <int:channel id="outputChannel" />
 
-    <int:filter input-channel="inputChannel"
-                output-channel="outputChannel"
-                ref="customFilter" />
+    <int:splitter ref="customSplitter"
+                  input-channel="inputChannel"
+                  output-channel="outputChannel" />
 
-    <bean id="customFilter" class="com.oreilly.integration.CustomFilter" />
+    <bean id="customSplitter"
+          class="com.oreilly.integration.CustomSplitter" />
+
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
 
