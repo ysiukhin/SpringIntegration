@@ -32,12 +32,16 @@ public class SpringIntegrationApplication implements ApplicationRunner {
         for (int i = 0; i < 10; i++) {
             Message<?> message;
             if(i % 2 == 0) {
-                message = new GenericMessage<>("Printing message payload for " + i);
+                message = MessageBuilder.withPayload("Printing message payload for " + i)
+                        .setHeader("routeHeader", "stringChannel")
+                        .build();
             } else {
-                message = new GenericMessage<>(i);
+                message = MessageBuilder.withPayload(i)
+                        .setHeader("routeHeader", "intChannel")
+                        .build();
             }
             this.gateway.print(message);
-//            TimeUnit.MILLISECONDS.sleep(100);
+//            TimeUnit.MILLISECONDS.sleep(10);
         }
     }
 }

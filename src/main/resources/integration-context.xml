@@ -5,15 +5,12 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <int:payload-type-router input-channel="inputChannel">
-        <int:mapping type="java.lang.Integer" channel="intChannel"/>
-        <int:mapping type="java.lang.String" channel="stringChannel"/>
-    </int:payload-type-router>
-
-    <int:channel id="inputChannel" />
-
     <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
                  default-request-channel="inputChannel" />
+
+    <int:header-value-router input-channel="inputChannel" header-name="routeHeader" />
+
+    <int:channel id="inputChannel" />
 
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
