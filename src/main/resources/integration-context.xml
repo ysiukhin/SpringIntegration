@@ -5,6 +5,8 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
+    <bean id="interceptor" class="com.oreilly.integration.CustomChannelInterceptor" />
+
     <int:bridge input-channel="pollableChannel"
                 output-channel="inputChannel">
         <int:poller fixed-delay="5"
@@ -17,6 +19,9 @@
 
     <int:channel id="pollableChannel">
         <int:queue capacity="10"/>
+        <int:interceptors>
+            <int:ref bean="interceptor"/>
+        </int:interceptors>
     </int:channel>
 
     <int:publish-subscribe-channel id="inputChannel" task-executor="executor"/>
