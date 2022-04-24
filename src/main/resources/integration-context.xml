@@ -15,7 +15,7 @@
 
     <int:header-enricher input-channel="inputChannel"
                          output-channel="enricherChannel">
-        <int:header name="publicKey" value="54321" />
+        <int:header name="publicKey" ref="customHeaderEnricher" method="getHeaderValue"/>
     </int:header-enricher>
 
     <int:header-filter input-channel="enricherChannel"
@@ -29,6 +29,7 @@
             input-channel="filterChannel"
             output-channel="outputChannel" />
 
+    <bean id="customHeaderEnricher" class="com.oreilly.integration.CustomHeaderEnricher" />
     <bean id="customTransformer" class="com.oreilly.integration.CustomTransformer" />
 
     <bean id="printService"
