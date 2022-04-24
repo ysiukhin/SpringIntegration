@@ -11,10 +11,13 @@
     <int:channel id="inputChannel" />
     <int:channel id="outputChannel" />
 
-    <int:transformer input-channel="inputChannel"
-                     output-channel="outputChannel"
-                     ref="customTransformer"
-                     method="transform" />
+<!--    <int:object-to-string-transformer-->
+<!--            input-channel="inputChannel"-->
+<!--            output-channel="outputChannel" />-->
+
+    <int:object-to-json-transformer
+            input-channel="inputChannel"
+            output-channel="outputChannel" />
 
     <bean id="customTransformer" class="com.oreilly.integration.CustomTransformer" />
 

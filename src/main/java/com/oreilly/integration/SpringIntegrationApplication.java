@@ -29,9 +29,13 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        String[] payloads = {"Kevin Bowersox", "Yuriy Siukhin", "John Doe"};
+        Person[] payloads =
+                {
+                    new Person("Kevin","Bowersox"),
+                    new Person("Yuriy", "Siukhin")
+                };
 
-        for (String payload : payloads) {
+        for (Person payload : payloads) {
             this.gateway.print(new GenericMessage<>(payload));
             TimeUnit.MILLISECONDS.sleep(100);
         }
