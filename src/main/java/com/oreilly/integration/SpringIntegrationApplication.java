@@ -10,6 +10,8 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.messaging.Message;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import sun.jvm.hotspot.runtime.Thread;
 
 import java.time.temporal.ChronoUnit;
@@ -41,8 +43,22 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 //            this.gateway.print(message);
 //        }
         for (Person payload : payloads) {
-//            String returnedMessage = this.gateway.uppercase(payload);
-            this.gateway.print(payload);
+            System.out.println("Invoking the gateway method");
+
+            ListenableFuture<String> future = this.gateway.uppercase(payload);
+            future.addCallback(new ListenableFutureCallback<String>() {
+                @Override
+                public void onFailure(Throwable ex) {
+
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    System.out.println("Invoking the success callback");
+                    System.out.println(result);
+                }
+            });
+//            this.gateway.print(payload);
 //            System.out.println(returnedMessage);
         }
     }
