@@ -10,22 +10,20 @@
                         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
 
     <int-file:inbound-channel-adapter
-            directory="file:src/test"
+            directory="file:src/test/read"
             filename-pattern="sample.txt"
             channel="inboundChannel">
         <int:poller fixed-rate="10" time-unit="SECONDS" />
     </int-file:inbound-channel-adapter>
 
+    <int-file:outbound-channel-adapter
+            directory="file:src/test/write"
+            channel="inboundChannel"
+            auto-create-directory="true"
+            mode="REPLACE"
+            delete-source-files="true" />
+
     <int:channel id="inboundChannel" />
 
-    <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
-
-    <bean id="personDirectoryService"
-          class="com.oreilly.integration.PersonDirectoryService" />
-
-    <bean id="personRegistrationService"
-          class="com.oreilly.integration.PersonRegistrationService" />
-
-    <int:service-activator ref="filePrinter" input-channel="inboundChannel" />
 
 </beans>
