@@ -2,21 +2,23 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+                        http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
 
-    <int:inbound-channel-adapter
-            ref="personDirectoryService"
-            method="findNewPeople"
-            channel="registerChannel" >
-        <int:poller fixed-rate="3" time-unit="SECONDS" />
-    </int:inbound-channel-adapter>
+    <int-file:inbound-channel-adapter
+            directory="file:src/test"
+            filename-pattern="sample.txt"
+            channel="inboundChannel">
+        <int:poller fixed-rate="10" time-unit="SECONDS" />
+    </int-file:inbound-channel-adapter>
 
-    <int:outbound-channel-adapter
-            ref="personRegistrationService"
-            method="registerEmail"
-            channel="registerChannel" />
+    <int:channel id="inboundChannel" />
 
-    <int:channel id="registerChannel" />
+    <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
 
     <bean id="personDirectoryService"
           class="com.oreilly.integration.PersonDirectoryService" />
@@ -24,5 +26,6 @@
     <bean id="personRegistrationService"
           class="com.oreilly.integration.PersonRegistrationService" />
 
+    <int:service-activator ref="filePrinter" input-channel="inboundChannel" />
 
 </beans>
