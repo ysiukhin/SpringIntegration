@@ -7,27 +7,22 @@
     <int:inbound-channel-adapter
             ref="personDirectoryService"
             method="findNewPeople"
-            channel="printChannel" >
+            channel="registerChannel" >
         <int:poller fixed-rate="3" time-unit="SECONDS" />
     </int:inbound-channel-adapter>
 
-    <int:channel id="printChannel" />
-    <int:channel id="uppercaseChannel" />
+    <int:outbound-channel-adapter
+            ref="personRegistrationService"
+            method="registerEmail"
+            channel="registerChannel" />
 
-    <bean id="personDirectoryService" class="com.oreilly.integration.PersonDirectoryService" />
+    <int:channel id="registerChannel" />
 
-    <bean id="printService"
-          class="com.oreilly.integration.PrintService" />
+    <bean id="personDirectoryService"
+          class="com.oreilly.integration.PersonDirectoryService" />
 
-    <bean id="uppercaseService"
-          class="com.oreilly.integration.UppercaseService"/>
+    <bean id="personRegistrationService"
+          class="com.oreilly.integration.PersonRegistrationService" />
 
-    <int:service-activator ref="uppercaseService"
-                           method="execute"
-                           input-channel="uppercaseChannel" />
-
-    <int:service-activator ref="printService"
-                            method="print"
-                            input-channel="printChannel" />
 
 </beans>
