@@ -41,8 +41,9 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 //            this.gateway.print(message);
 //        }
         for (Person payload : payloads) {
-            String returnedMessage = this.gateway.uppercase(payload);
-            System.out.println(returnedMessage);
+//            String returnedMessage = this.gateway.uppercase(payload);
+            this.gateway.print(payload);
+//            System.out.println(returnedMessage);
         }
     }
 }
