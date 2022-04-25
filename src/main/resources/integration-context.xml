@@ -4,11 +4,13 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
-                 default-request-channel="inputChannel" />
+    <int:gateway service-interface="com.oreilly.integration.EnhancedPrinterGateway">
+        <int:method name="print" request-channel="printChannel" />
+        <int:method name="uppercase" request-channel="uppercaseChannel" />
+    </int:gateway>
 
-    <int:channel id="inputChannel" />
-    <int:channel id="outputChannel" />
+    <int:channel id="printChannel" />
+    <int:channel id="uppercaseChannel" />
 
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
@@ -18,10 +20,10 @@
 
     <int:service-activator ref="uppercaseService"
                            method="execute"
-                           input-channel="inputChannel" />
+                           input-channel="uppercaseChannel" />
 
     <int:service-activator ref="printService"
                             method="print"
-                            input-channel="outputChannel" />
+                            input-channel="printChannel" />
 
 </beans>

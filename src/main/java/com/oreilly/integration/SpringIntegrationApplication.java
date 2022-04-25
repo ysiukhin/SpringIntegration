@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class SpringIntegrationApplication implements ApplicationRunner {
 
     @Autowired
-    private PrinterGateway gateway;
+    private EnhancedPrinterGateway gateway;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringIntegrationApplication.class, args);
@@ -41,11 +41,8 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 //            this.gateway.print(message);
 //        }
         for (Person payload : payloads) {
-            Message<?> message = MessageBuilder.withPayload(payload)
-                    .setHeader("replyChannel", "outputChannel")
-                    .build();
-            this.gateway.print(message);
-            TimeUnit.MILLISECONDS.sleep(100);
+            String returnedMessage = this.gateway.uppercase(payload);
+            System.out.println(returnedMessage);
         }
     }
 }
