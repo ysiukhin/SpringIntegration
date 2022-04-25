@@ -16,14 +16,24 @@
         <int:poller fixed-rate="10" time-unit="SECONDS" />
     </int-file:inbound-channel-adapter>
 
-    <int-file:outbound-channel-adapter
-            directory="file:src/test/write"
-            channel="inboundChannel"
-            auto-create-directory="true"
-            mode="REPLACE"
-            delete-source-files="true" />
+<!--    <int-file:outbound-channel-adapter-->
+<!--            directory="file:src/test/write"-->
+<!--            channel="inboundChannel"-->
+<!--            auto-create-directory="true"-->
+<!--            mode="REPLACE"-->
+<!--            delete-source-files="true" />-->
+
+    <int-file:file-to-string-transformer
+            input-channel="inboundChannel"
+            output-channel="transformChannel" />
 
     <int:channel id="inboundChannel" />
+    <int:channel id="transformChannel" />
 
+    <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
 
+    <int:service-activator
+            ref="filePrinter"
+            method="print"
+            input-channel="transformChannel" />
 </beans>
