@@ -2,7 +2,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <int:gateway service-interface="com.oreilly.integration.PrinterGateway"
@@ -10,41 +9,19 @@
 
     <int:channel id="inputChannel" />
     <int:channel id="outputChannel" />
-    <int:channel id="filterChannel" />
-    <int:channel id="enricherChannel" />
-    <int:channel id="requestChannel" />
-
-    <int:enricher input-channel="inputChannel"
-                  request-channel="requestChannel"
-                  output-channel="enricherChannel">
-        <int:property name="phoneNumber" expression="payload"/>
-    </int:enricher>
-
-    <int:header-filter input-channel="enricherChannel"
-                       output-channel="filterChannel"
-                       header-names="privateKey" />
-<!--    <int:object-to-string-transformer-->
-<!--            input-channel="inputChannel"-->
-<!--            output-channel="outputChannel" />-->
-
-    <int:object-to-json-transformer
-            input-channel="filterChannel"
-            output-channel="outputChannel" />
-
-    <bean id="customService" class="com.oreilly.integration.CustomService" />
-
-    <bean id="customTransformer" class="com.oreilly.integration.CustomTransformer" />
 
     <bean id="printService"
           class="com.oreilly.integration.PrintService" />
 
+    <bean id="uppercaseService"
+          class="com.oreilly.integration.UppercaseService"/>
+
+    <int:service-activator ref="uppercaseService"
+                           method="execute"
+                           input-channel="inputChannel" />
 
     <int:service-activator ref="printService"
                             method="print"
                             input-channel="outputChannel" />
-
-    <int:service-activator ref="customService"
-                            method="getPhoneNumber"
-                            input-channel="requestChannel" />
 
 </beans>

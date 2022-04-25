@@ -35,9 +35,14 @@ public class SpringIntegrationApplication implements ApplicationRunner {
                     new Person("Yuriy", "Siukhin")
                 };
 
+//        for (int x = 0; x < payloads.length; x++) {
+//            Message<?> message = MessageBuilder.withPayload(payloads[x]).setHeader("replyChannel", "outputChannel")
+//                    .build();
+//            this.gateway.print(message);
+//        }
         for (Person payload : payloads) {
             Message<?> message = MessageBuilder.withPayload(payload)
-                    .setHeader("privateKey", "12345")
+                    .setHeader("replyChannel", "outputChannel")
                     .build();
             this.gateway.print(message);
             TimeUnit.MILLISECONDS.sleep(100);
