@@ -4,43 +4,24 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
                         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-                        http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+                        http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+                        http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/file/spring-integration-jdbc.xsd
+                        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <int-file:inbound-channel-adapter
-            directory="file:src/test/read"
-            filename-pattern="sample.txt"
-            channel="inboundChannel">
-        <int:poller fixed-rate="10" time-unit="SECONDS" />
-    </int-file:inbound-channel-adapter>
-
-<!--    <int-file:outbound-channel-adapter-->
-<!--            directory="file:src/test/write"-->
-<!--            channel="inboundChannel"-->
-<!--            auto-create-directory="true"-->
-<!--            mode="REPLACE"-->
-<!--            delete-source-files="true" />-->
-
-    <int-file:file-to-string-transformer
-            input-channel="inboundChannel"
-            output-channel="transformChannel" />
-
-    <int:channel id="inboundChannel" />
-    <int:channel id="transformChannel" />
-    <int:channel id="outboundChannel" />
+    <jdbc:embedded-database id="dataSource" type="H2">
+        <jdbc:script location="init.sql" />
+    </jdbc:embedded-database>
+    <int:channel id="jdbcChannel" />
 
     <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
-    <int-file:outbound-gateway
-            request-channel="transformChannel"
-            reply-channel="outboundChannel"
-            directory="file:src/test/write"
-            auto-create-directory="true"
-            mode="REPLACE"/>
 
     <int:service-activator
             ref="filePrinter"
             method="print"
-            input-channel="outboundChannel" />
+            input-channel="jdbcChannel" />
 </beans>
