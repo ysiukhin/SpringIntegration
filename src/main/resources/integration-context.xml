@@ -29,11 +29,18 @@
 
     <int:channel id="inboundChannel" />
     <int:channel id="transformChannel" />
+    <int:channel id="outboundChannel" />
 
     <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
+    <int-file:outbound-gateway
+            request-channel="transformChannel"
+            reply-channel="outboundChannel"
+            directory="file:src/test/write"
+            auto-create-directory="true"
+            mode="REPLACE"/>
 
     <int:service-activator
             ref="filePrinter"
             method="print"
-            input-channel="transformChannel" />
+            input-channel="outboundChannel" />
 </beans>
