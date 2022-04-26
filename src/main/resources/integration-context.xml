@@ -10,13 +10,21 @@
                         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
                         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
                         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
-                        http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/file/spring-integration-jdbc.xsd
+                        http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
                         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <jdbc:embedded-database id="dataSource" type="H2">
         <jdbc:script location="init.sql" />
     </jdbc:embedded-database>
+
     <int:channel id="jdbcChannel" />
+
+    <int-jdbc:inbound-channel-adapter
+            channel="jdbcChannel"
+            query="select * from person;"
+            data-source="dataSource">
+        <int:poller fixed-rate="4000"/>
+    </int-jdbc:inbound-channel-adapter>
 
     <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
 

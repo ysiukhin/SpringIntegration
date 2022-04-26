@@ -6,3 +6,4 @@ create table person(
 );
 
 insert into person values(1, 'Kevin', 'Bowersox');
+insert into person values(2, 'John', 'Doe');
