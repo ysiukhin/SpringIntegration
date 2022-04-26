@@ -16,11 +16,14 @@
     <int:gateway service-interface="com.oreilly.integration.PersonGateway"
                  default-request-channel="inboundChannel"/>
 
-    <int-jdbc:outbound-channel-adapter channel="inboundChannel"
-                                       data-source="dataSource"
-                                       query="insert into person values(:payload.id, :payload.firstName, :payload.lastName)" />
-    <jdbc:embedded-database id="dataSource" type="H2">
-        <jdbc:script location="init.sql" />
+    <int-jdbc:outbound-gateway request-channel="inboundChannel"
+                               data-source="dataSource"
+                               update="insert into person values(:payload.id, :payload.firstName, :payload.lastName)"
+                               query="select * from person where person_id = :payload.id"
+                               reply-channel="jdbcChannel" />
+
+    <jdbc:embedded-database id="dataSource" type="H2" database-name="test">
+        <jdbc:script location="classpath:init.sql" />
     </jdbc:embedded-database>
 
     <int:channel id="jdbcChannel" />
