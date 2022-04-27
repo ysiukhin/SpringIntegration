@@ -6,28 +6,42 @@
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
        xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
                         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
                         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
                         http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
-                        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+                        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                        http://www.springframework.org/schema/integration/jms https://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd">
+    <int:gateway
+            default-request-channel="inboundChannel"
+            service-interface="com.oreilly.integration.PersonGateway" />
 
-    <int:gateway service-interface="com.oreilly.integration.PersonGateway"
-                 default-request-channel="inboundChannel"/>
+    <int-jms:outbound-channel-adapter
+            connection-factory="connectionFactory"
+            channel="outboundChannel"
+            destination="queue" />
 
-    <int-jdbc:outbound-gateway request-channel="inboundChannel"
-                               data-source="dataSource"
-                               update="insert into person values(:payload.id, :payload.firstName, :payload.lastName)"
-                               query="select * from person where person_id = :payload.id"
-                               reply-channel="jdbcChannel" />
+    <int:object-to-string-transformer
+            input-channel="inboundChannel"
+            output-channel="outboundChannel" />
 
-    <jdbc:embedded-database id="dataSource" type="H2" database-name="test">
-        <jdbc:script location="classpath:init.sql" />
-    </jdbc:embedded-database>
-
-    <int:channel id="jdbcChannel" />
+    <int:channel id="jmsChannel" />
     <int:channel id="inboundChannel" />
+    <int:channel id="outboundChannel" />
+
+    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="sample.queue"/>
+    </bean>
+
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="tcp://localhost:61616" />
+            </bean>
+        </property>
+    </bean>
 
 
     <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
@@ -35,5 +49,5 @@
     <int:service-activator
             ref="filePrinter"
             method="print"
-            input-channel="jdbcChannel" />
+            input-channel="jmsChannel" />
 </beans>
