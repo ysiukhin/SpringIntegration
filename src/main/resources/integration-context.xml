@@ -27,6 +27,13 @@
             input-channel="inboundChannel"
             output-channel="outboundChannel" />
 
+    <int-jms:inbound-channel-adapter
+            connection-factory="connectionFactory"
+            destination="queue"
+            channel="jmsChannel" >
+        <int:poller fixed-rate="7000" />
+    </int-jms:inbound-channel-adapter>
+
     <int:channel id="jmsChannel" />
     <int:channel id="inboundChannel" />
     <int:channel id="outboundChannel" />

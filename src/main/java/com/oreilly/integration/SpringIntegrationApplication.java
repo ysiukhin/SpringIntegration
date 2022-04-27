@@ -5,9 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
 
-//@SpringBootApplication(exclude = ActiveMQAutoConfiguration.class)
 @SpringBootApplication
 public class SpringIntegrationApplication implements ApplicationRunner {
 
@@ -22,5 +20,6 @@ public class SpringIntegrationApplication implements ApplicationRunner {
     public void run(ApplicationArguments args){
         Person person = new Person(4, "Jane", "Doe");
         this.gateway.save(person);
+        System.out.println("The message has been sent to JMS.");
     }
 }

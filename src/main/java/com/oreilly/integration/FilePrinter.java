@@ -7,13 +7,14 @@ import java.io.*;
 public class FilePrinter {
 
     public void print(Message<?> message) {
+        System.out.println("Printing the message:");
         System.out.println(message);
     }
 
-    public void print(String file) {
-        System.out.println("Invoking the print method with a string");
-        System.out.println(file);
-    }
+//    public void print(String file) {
+//        System.out.println("Invoking the print method with a string");
+//        System.out.println(file);
+//    }
 
     public void print(File file) {
         BufferedReader reader = null;
