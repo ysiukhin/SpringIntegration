@@ -6,9 +6,15 @@ import java.io.*;
 
 public class FilePrinter {
 
-    public void print(Message<?> message) {
+//    public void print(Message<?> message) {
+//        System.out.println("Printing the message:");
+//        System.out.println(message);
+//    }
+
+    public String print(Message<?> message) {
         System.out.println("Printing the message:");
         System.out.println(message);
+        return "1 message worked";
     }
 
 //    public void print(String file) {

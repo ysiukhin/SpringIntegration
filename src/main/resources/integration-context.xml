@@ -27,14 +27,19 @@
             input-channel="inboundChannel"
             output-channel="outboundChannel" />
 
-    <int-jms:message-driven-channel-adapter
+    <int-jms:inbound-gateway
             connection-factory="connectionFactory"
-            destination="queue"
-            channel="jmsChannel" />
+            request-destination="queue"
+            request-channel="jmsChannel"
+            default-reply-destination="replyQueue"/>
 
     <int:channel id="jmsChannel" />
     <int:channel id="inboundChannel" />
     <int:channel id="outboundChannel" />
+
+    <bean id="replyQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="reply.queue"/>
+    </bean>
 
     <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="sample.queue"/>
