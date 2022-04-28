@@ -18,17 +18,26 @@
                         http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
 
         <int:channel id="httpChannel"/>
+        <int:channel id="httpOutbound"/>
+
+        <int:gateway service-interface="com.oreilly.integration.SimpleGateway"
+                     default-request-channel="httpOutbound" />
+
+        <int-http:outbound-channel-adapter
+                channel="httpOutbound"
+                http-method="GET"
+                url="http://localhost:8080/" />
 
         <int-http:inbound-gateway
                 request-channel="httpChannel"
                 supported-methods="GET"
                 path="/" />
 
-        <bean id="filePrinter"
-              class="com.oreilly.integration.FilePrinter"/>
+        <bean id="messagePrinter"
+              class="com.oreilly.integration.MessagePrinter"/>
 
         <int:service-activator
-                ref="filePrinter"
+                ref="messagePrinter"
                 method="print"
                 input-channel="httpChannel"/>
 

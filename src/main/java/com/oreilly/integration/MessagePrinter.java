@@ -4,7 +4,7 @@ import org.springframework.messaging.Message;
 
 import java.io.*;
 
-public class FilePrinter {
+public class MessagePrinter {
 
 //    public void print(Message<?> message) {
 //        System.out.println("Printing the message:");
@@ -12,6 +12,7 @@ public class FilePrinter {
 //    }
 
     public String print(Message<?> message) {
+        System.out.println("MessagePrinter is working the message.");
         return "From the inbound gateway: 1 message worked";
     }
 
