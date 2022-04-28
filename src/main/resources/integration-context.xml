@@ -19,17 +19,17 @@
 
         <int:channel id="httpChannel"/>
 
-        <int-http:inbound-channel-adapter
-               path="/"
-               supported-methods="GET"
-               channel="httpChannel"/>
+        <int-http:inbound-gateway
+                request-channel="httpChannel"
+                supported-methods="GET"
+                path="/" />
 
         <bean id="filePrinter"
               class="com.oreilly.integration.FilePrinter"/>
 
         <int:service-activator
                 ref="filePrinter"
-                method="printConsole"
+                method="print"
                 input-channel="httpChannel"/>
 
 </beans>
