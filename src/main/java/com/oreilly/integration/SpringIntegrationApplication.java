@@ -9,17 +9,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringIntegrationApplication implements ApplicationRunner {
 
-    @Autowired
-    private PersonGateway gateway;
-
     public static void main(String[] args) {
         SpringApplication.run(SpringIntegrationApplication.class, args);
     }
 
     @Override
     public void run(ApplicationArguments args){
-        Person person = new Person(4, "Jane", "Doe");
-        this.gateway.save(person);
-        System.out.println("The message has been sent to JMS.");
+//        Person person = new Person(4, "Jane", "Doe");
+//        this.gateway.save(person);
+//        System.out.println("The message has been sent to JMS.");
     }
 }

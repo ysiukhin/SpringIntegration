@@ -3,61 +3,33 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
        xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-http="http://www.springframework.org/schema/integration/http"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
                         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+                        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
                         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
                         http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
-                        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
-                        http://www.springframework.org/schema/integration/jms https://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd">
-    <int:gateway
-            default-request-channel="inboundChannel"
-            service-interface="com.oreilly.integration.PersonGateway" />
+                        http://www.springframework.org/schema/integration/jms https://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+                        http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
 
-    <int-jms:outbound-channel-adapter
-            connection-factory="connectionFactory"
-            channel="outboundChannel"
-            destination="queue" />
+        <int:channel id="httpChannel"/>
 
-    <int:object-to-string-transformer
-            input-channel="inboundChannel"
-            output-channel="outboundChannel" />
+        <int-http:inbound-channel-adapter
+               path="/"
+               supported-methods="GET"
+               channel="httpChannel"/>
 
-    <int-jms:inbound-gateway
-            connection-factory="connectionFactory"
-            request-destination="queue"
-            request-channel="jmsChannel"
-            default-reply-destination="replyQueue"/>
+        <bean id="filePrinter"
+              class="com.oreilly.integration.FilePrinter"/>
 
-    <int:channel id="jmsChannel" />
-    <int:channel id="inboundChannel" />
-    <int:channel id="outboundChannel" />
+        <int:service-activator
+                ref="filePrinter"
+                method="printConsole"
+                input-channel="httpChannel"/>
 
-    <bean id="replyQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="reply.queue"/>
-    </bean>
-
-    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="sample.queue"/>
-    </bean>
-
-    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-        <property name="targetConnectionFactory">
-            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
-                <property name="brokerURL" value="tcp://localhost:61616" />
-            </bean>
-        </property>
-    </bean>
-
-
-    <bean id="filePrinter" class="com.oreilly.integration.FilePrinter" />
-
-    <int:service-activator
-            ref="filePrinter"
-            method="print"
-            input-channel="jmsChannel" />
 </beans>
