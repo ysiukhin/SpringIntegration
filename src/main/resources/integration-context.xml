@@ -19,14 +19,16 @@
 
         <int:channel id="httpChannel"/>
         <int:channel id="httpOutbound"/>
+        <int:channel id="httpReply"/>
 
         <int:gateway service-interface="com.oreilly.integration.SimpleGateway"
                      default-request-channel="httpOutbound" />
 
-        <int-http:outbound-channel-adapter
-                channel="httpOutbound"
+        <int-http:outbound-gateway
+                request-channel="httpOutbound"
+                url="http://localhost:8080/"
                 http-method="GET"
-                url="http://localhost:8080/" />
+                reply-channel="httpReply" />
 
         <int-http:inbound-gateway
                 request-channel="httpChannel"
@@ -36,9 +38,17 @@
         <bean id="messagePrinter"
               class="com.oreilly.integration.MessagePrinter"/>
 
+<!--        <bean id="messagePrinter2"-->
+<!--              class="com.oreilly.integration.MessagePrinter"/>-->
+
         <int:service-activator
                 ref="messagePrinter"
                 method="print"
                 input-channel="httpChannel"/>
+
+        <int:service-activator
+                ref="messagePrinter"
+                method="printConsole"
+                input-channel="httpReply" />
 
 </beans>
